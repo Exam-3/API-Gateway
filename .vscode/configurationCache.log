@@ -1,0 +1,1 @@
+{"buildTargets":["proto-gen","run","swag-gen","tidy"],"launchTargets":[],"customConfigurationProvider":{"workspaceBrowse":{"browsePath":[],"compilerArgs":[]},"fileIndex":[]}}

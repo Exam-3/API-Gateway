@@ -10,9 +10,9 @@ import (
 )
 
 type Handler struct {
-	UserClient        user.UserClient
-	RestaurantClient  item.RestaurantClient
-	Logger            *slog.Logger
+	UserClient user.UserServiceClient
+	ItemClient item.ItemServiceClient
+	Logger     *slog.Logger
 }
 
 func NewHandler(cfg *config.Config) *Handler {

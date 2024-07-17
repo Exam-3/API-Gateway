@@ -23,8 +23,8 @@ func Load() *Config {
 	cfg := Config{}
 
 	cfg.HTTP_PORT = cast.ToString(coalesce("HTTP_PORT", ":8080"))
-	cfg.USER_SERVICE_PORT = cast.ToString(coalesce("USER_SERVICE_PORT", ":8081"))
-	cfg.ITEM_SERVICE_PORT = cast.ToString(coalesce("ITEM_SERVICE_PORT", ":8082"))
+	cfg.USER_SERVICE_PORT = cast.ToString(coalesce("USER_SERVICE_PORT", ":50051"))
+	cfg.ITEM_SERVICE_PORT = cast.ToString(coalesce("ITEM_SERVICE_PORT", ":50052"))
 
 	return &cfg
 }

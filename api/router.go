@@ -12,64 +12,84 @@ import (
 	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
-// @title Restaurant Reservation System
+// @title User Item System
 // @version 1.0
-// @description API Gateway of Restaurant Reservation System
+// @description API Gateway of User Item System
 // @host localhost:8080
 // BasePath: /
 func NewRouter(cfg *config.Config) *gin.Engine {
-	r := gin.Default()
+	router := gin.Default()
 
-	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
+	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
-	api := r.Group("/reservation-system")
+	api := router.Group("/item-system")
 	// api.Use(middleware.Check)
 
 	h := handler.NewHandler(cfg)
 
 	u := api.Group("/users")
 	{
-		u.GET("/:user_id", h.GetUser)
-		u.PUT("/:user_id", h.UpdateUser)
+		u.GET("/:user_id", h.GetUserProfile)
+		u.PUT("/:user_id", h.UpdateUserProfile)
 		u.DELETE("/:user_id", h.DeleteUser)
+		u.POST("", h.GetUsers)
+		u.GET("/:user_id/eco-points", h.GetEcoPoints)
+		u.PUT("/:user_id/eco-points", h.AddEcoPoints)
+		u.POST("/:user_id/eco-points/history", h.GetEcoPointsHistory)
 	}
 
-	rest := api.Group("/restaurants")
+	category := api.Group("/category")
 	{
-		rest.POST("", h.CreateRestaurant)
-		rest.GET("/:restaurant_id", h.GetRestaurantByID)
-		rest.PUT("/:restaurant_id", h.UpdateRestaurant)
-		rest.DELETE("/:restaurant_id", h.DeleteRestaurant)
-		rest.GET("", h.FetchRestaurants)
-	}
+		category.POST("/catogories", h.AddItemCategory)
 
-	reser := api.Group("reservations")
+	}
+	
+
+	item := api.Group("items")
 	{
-		reser.POST("", h.CreateReservation)
-		reser.GET("/:reservation_id", h.GetReservationByID)
-		reser.PUT("/:reservation_id", h.UpdateReservation)
-		reser.DELETE("/:reservation_id", h.DeleteReservation)
-		reser.GET("/:reservation_id/check", h.ValidateReservation)
-		reser.POST("/:reservation_id/order", h.Order)
-		reser.POST("/:reservation_id/payment", h.Pay)
-		reser.GET("", h.FetchReservations)
+		item.POST("/addItem", h.AddItem)
+		item.PUT("/:item_id", h.UpdateItem)
+		item.DELETE("/:item_id", h.DeleteItem)
+		item.POST("", h.ListItems)
+		item.GET("/:item_id", h.GetItem)
+		item.POST("/search", h.SearchItems)
+	
 	}
 
-	m := api.Group("menu")
+	ecoChannels := api.Group("ecosystem")
 	{
-		m.POST("", h.AddMeal)
-		m.GET("/:meal_id", h.GetMealByID)
-		m.PUT("/:meal_id", h.UpdateMeal)
-		m.DELETE("/:meal_id", h.DeleteMeal)
-		m.GET("", h.FetchMeals)
+		ecoChannels.POST("eco-challenge", h.CreateEcoChallenge)
+        ecoChannels.POST("/participate", h.ParticipateEcoChallenge)
+        ecoChannels.PUT("update", h.UpdateEcoChallengeProgress)
 	}
 
-	p := api.Group("payments")
+	rating := api.Group("ratings")
 	{
-		p.POST("", h.CreatePayment)
-		p.GET("/:payment_id", h.GetPayment)
-		p.PUT("/:payment_id", h.UpdatePayment)
+		rating.POST("add", h.AddRating)
+		rating.POST("GetAll", h.GetRatings)
+	
 	}
 
-	return r
+	recycling := api.Group("recyclings")
+	{
+		recycling.POST("", h.AddRecyclingCenter)
+		recycling.GET("search", h.SearchRecyclingCenters)
+		recycling.GET("", h.SubmitItemsForRecycling)
+	}
+
+	statistics := api.Group("statistics")
+	{
+		statistics.POST("", h.Statistics)
+	}
+	
+
+	swap := api.Group("swaps")
+	{
+		swap.POST("/", h.SendSwapRequest)
+		swap.PUT("/accept", h.AcceptSwapRequest)
+		swap.PUT("/:swap_id", h.ListSwapRequests)
+		swap.PUT("/reject", h.RejectSwapRequest)
+	}
+
+	return router
 }
